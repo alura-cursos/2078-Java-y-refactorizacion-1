@@ -32,22 +32,7 @@ public class AdopetConsoleApplication {
                 opcionElegida = Integer.parseInt(textoEscrito);
 
                 if (opcionElegida == 1) {
-                    HttpClient client = HttpClient.newHttpClient();
-                    String uri = "http://localhost:8080/refugios";
-                    HttpRequest request = HttpRequest.newBuilder()
-                            .uri(URI.create(uri))
-                            .method("GET", HttpRequest.BodyPublishers.noBody())
-                            .build();
-                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                    String responseBody = response.body();
-                    JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
-                    System.out.println("Refugios registrados:");
-                    for (JsonElement element : jsonArray) {
-                        JsonObject jsonObject = element.getAsJsonObject();
-                        long id = jsonObject.get("id").getAsLong();
-                        String nombre = jsonObject.get("nombre").getAsString();
-                        System.out.println(id + " - " + nombre);
-                    }
+                    listarRefugios();
                 } else if (opcionElegida == 2) {
                     System.out.println("Escriba el nombre del refugio:");
                     String nombre = new Scanner(System.in).nextLine();
@@ -172,6 +157,25 @@ public class AdopetConsoleApplication {
             System.out.println("Finalizando el programa...");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void listarRefugios() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        String uri = "http://localhost:8080/refugios";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        String responseBody = response.body();
+        JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
+        System.out.println("Refugios registrados:");
+        for (JsonElement element : jsonArray) {
+            JsonObject jsonObject = element.getAsJsonObject();
+            long id = jsonObject.get("id").getAsLong();
+            String nombre = jsonObject.get("nombre").getAsString();
+            System.out.println(id + " - " + nombre);
         }
     }
 }
