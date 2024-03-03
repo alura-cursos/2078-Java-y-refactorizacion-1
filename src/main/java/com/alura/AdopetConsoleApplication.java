@@ -38,7 +38,7 @@ public class AdopetConsoleApplication {
                 } else if (opcionElegida == 3) {
                     listarMascotasDelRefugio();
                 } else if (opcionElegida == 4) {
-                    registrarMascotaEnElRefugio();
+                    importarMascotasEnElRefugio();
                 } else if (opcionElegida == 5) {
                     break;
                 } else {
@@ -55,11 +55,7 @@ public class AdopetConsoleApplication {
     private static void listarRefugios() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         String uri = "http://localhost:8080/refugios";
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(uri))
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = dispararRequestGet(client, uri);
         String responseBody = response.body();
         JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
         System.out.println("Refugios registrados:");
@@ -110,11 +106,7 @@ public class AdopetConsoleApplication {
 
         HttpClient client = HttpClient.newHttpClient();
         String uri = "http://localhost:8080/refugios/" + idONombre + "/pets";
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(uri))
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = dispararRequestGet(client, uri);
         int statusCode = response.statusCode();
         if (statusCode == 404 || statusCode == 500) {
             System.out.println("ID o nombre no registrado!");
@@ -133,7 +125,7 @@ public class AdopetConsoleApplication {
         }
     }
 
-    private static void registrarMascotaEnElRefugio() throws IOException, InterruptedException {
+    private static void importarMascotasEnElRefugio() throws IOException, InterruptedException {
         System.out.println("Escriba el id o nombre del refugio:");
         String idONombre = new Scanner(System.in).nextLine();
 
@@ -166,13 +158,7 @@ public class AdopetConsoleApplication {
 
             HttpClient client = HttpClient.newHttpClient();
             String uri = "http://localhost:8080/refugios/" + idONombre + "/pets";
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(uri))
-                    .header("Content-Type", "application/json")
-                    .method("POST", HttpRequest.BodyPublishers.ofString(json.toString()))
-                    .build();
-
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = dispararRequestPost(client, uri, json);
             int statusCode = response.statusCode();
             String responseBody = response.body();
             if (statusCode == 200) {
@@ -187,5 +173,23 @@ public class AdopetConsoleApplication {
             }
         }
         reader.close();
+    }
+
+    private static HttpResponse<String> dispararRequestGet(HttpClient client, String uri) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    private static HttpResponse<String> dispararRequestPost(HttpClient client, String uri, JsonObject json)
+            throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("Content-Type", "application/json")
+                .method("POST", HttpRequest.BodyPublishers.ofString(json.toString()))
+                .build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }
