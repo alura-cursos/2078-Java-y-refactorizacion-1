@@ -2,6 +2,9 @@ package com.alura.domain;
 
 public class Mascota {
 
+    public Mascota() {
+    }
+
     public Mascota(String tipo, String nombre, String raza, int edad, String color, Float peso) {
         this.tipo = tipo;
         this.nombre = nombre;
@@ -37,5 +40,13 @@ public class Mascota {
 
     public int getEdad() {
         return edad;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Float getPeso() {
+        return peso;
     }
 }

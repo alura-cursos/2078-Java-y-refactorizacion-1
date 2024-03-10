@@ -2,11 +2,11 @@ package com.alura.service;
 
 import com.alura.client.ClientHttpConfiguration;
 import com.alura.domain.Refugio;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
@@ -26,7 +26,8 @@ public class RefugioService {
         String uri = "http://localhost:8080/refugios";
         HttpResponse<String> response = client.dispararRequestGet(uri);
         String responseBody = response.body();
-        Refugio[] refugios = new ObjectMapper().readValue(responseBody, Refugio[].class);
+        ObjectMapper objectMapper = new ObjectMapper().enable(JsonParser.Feature.INCLUDE_SOURCE_IN_LOCATION);
+        Refugio[] refugios = objectMapper.readValue(responseBody, Refugio[].class);
         List<Refugio> refugioList = Arrays.stream(refugios).toList();
         System.out.println("Refugios registrados:");
         for (Refugio refugio : refugioList) {
