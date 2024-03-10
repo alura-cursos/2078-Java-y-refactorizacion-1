@@ -1,23 +1,26 @@
 package com.alura.service;
 
+import com.alura.client.ClientHttpConfiguration;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Scanner;
 
 public class RefugioService {
 
+    private ClientHttpConfiguration client;
+
+    public RefugioService(ClientHttpConfiguration client) {
+        this.client = client;
+    }
+
     public void listarRefugios() throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
         String uri = "http://localhost:8080/refugios";
-        HttpResponse<String> response = dispararRequestGet(client, uri);
+        HttpResponse<String> response = client.dispararRequestGet(uri);
         String responseBody = response.body();
         JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
         System.out.println("Refugios registrados:");
@@ -42,9 +45,8 @@ public class RefugioService {
         json.addProperty("telefono", telefono);
         json.addProperty("email", email);
 
-        HttpClient client = HttpClient.newHttpClient();
         String uri = "http://localhost:8080/refugios";
-        HttpResponse<String> response = dispararRequestPost(client, uri, json);
+        HttpResponse<String> response = client.dispararRequestPost(uri, json);
         int statusCode = response.statusCode();
         String responseBody = response.body();
         if (statusCode == 200) {
@@ -54,23 +56,5 @@ public class RefugioService {
             System.out.println("Error al registrar el refugio:");
             System.out.println(responseBody);
         }
-    }
-
-    private HttpResponse<String> dispararRequestGet(HttpClient client, String uri) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(uri))
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
-    }
-
-    private HttpResponse<String> dispararRequestPost(HttpClient client, String uri, JsonObject json)
-            throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(uri))
-                .header("Content-Type", "application/json")
-                .method("POST", HttpRequest.BodyPublishers.ofString(json.toString()))
-                .build();
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }
