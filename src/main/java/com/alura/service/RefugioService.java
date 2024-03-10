@@ -2,6 +2,7 @@ package com.alura.service;
 
 import com.alura.client.ClientHttpConfiguration;
 import com.alura.domain.Refugio;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -9,6 +10,8 @@ import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class RefugioService {
@@ -23,12 +26,12 @@ public class RefugioService {
         String uri = "http://localhost:8080/refugios";
         HttpResponse<String> response = client.dispararRequestGet(uri);
         String responseBody = response.body();
-        JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
+        Refugio[] refugios = new ObjectMapper().readValue(responseBody, Refugio[].class);
+        List<Refugio> refugioList = Arrays.stream(refugios).toList();
         System.out.println("Refugios registrados:");
-        for (JsonElement element : jsonArray) {
-            JsonObject jsonObject = element.getAsJsonObject();
-            long id = jsonObject.get("id").getAsLong();
-            String nombre = jsonObject.get("nombre").getAsString();
+        for (Refugio refugio : refugioList) {
+            long id = refugio.getId();
+            String nombre = refugio.getNombre();
             System.out.println(id + " - " + nombre);
         }
     }
