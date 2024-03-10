@@ -1,6 +1,7 @@
 package com.alura.service;
 
 import com.alura.client.ClientHttpConfiguration;
+import com.alura.domain.Refugio;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -40,13 +41,10 @@ public class RefugioService {
         System.out.println("Escriba el email del refugio:");
         String email = new Scanner(System.in).nextLine();
 
-        JsonObject json = new JsonObject();
-        json.addProperty("nombre", nombre);
-        json.addProperty("telefono", telefono);
-        json.addProperty("email", email);
+        Refugio refugio = new Refugio(nombre, telefono, email);
 
         String uri = "http://localhost:8080/refugios";
-        HttpResponse<String> response = client.dispararRequestPost(uri, json);
+        HttpResponse<String> response = client.dispararRequestPost(uri, refugio);
         int statusCode = response.statusCode();
         String responseBody = response.body();
         if (statusCode == 200) {
