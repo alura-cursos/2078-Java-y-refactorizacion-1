@@ -2,6 +2,7 @@ package com.alura.service;
 
 import com.alura.client.ClientHttpConfiguration;
 import com.alura.domain.Mascota;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,7 +11,10 @@ import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class MascotaService {
@@ -32,15 +36,15 @@ public class MascotaService {
             System.out.println("ID o nombre no registrado!");
         }
         String responseBody = response.body();
-        JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
+        Mascota[] mascotas = new ObjectMapper().readValue(responseBody, Mascota[].class);
+        List<Mascota> mascotaList = Arrays.stream(mascotas).toList();
         System.out.println("Mascotas registradas:");
-        for (JsonElement element : jsonArray) {
-            JsonObject jsonObject = element.getAsJsonObject();
-            long id = jsonObject.get("id").getAsLong();
-            String tipo = jsonObject.get("tipo").getAsString();
-            String nombre = jsonObject.get("nombre").getAsString();
-            String raza = jsonObject.get("raza").getAsString();
-            int edad = jsonObject.get("edad").getAsInt();
+        for (Mascota mascota : mascotaList) {
+            long id = mascota.getId();
+            String tipo = mascota.getTipo();
+            String nombre = mascota.getNombre();
+            String raza = mascota.getRaza();
+            int edad = mascota.getEdad();
             System.out.println(id + " - " + tipo + " - " + nombre + " - " + raza + " - " + edad + " año(s)");
         }
     }
