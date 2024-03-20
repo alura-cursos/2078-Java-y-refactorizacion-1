@@ -35,4 +35,15 @@ public class Refugio {
     public Mascota[] getPets() {
         return pets;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return """
+            "id":%s,"nombre":"%s","telefono":"%s","email":"%s"
+            """.formatted(this.id, this.nombre, this.telefono, this.email);
+    }
 }
