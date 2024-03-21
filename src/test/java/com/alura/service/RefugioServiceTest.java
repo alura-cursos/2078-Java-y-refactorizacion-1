@@ -22,7 +22,7 @@ public class RefugioServiceTest {
     private Refugio refugio = new Refugio("Test","61981880392", "refugio_alura@gmail.com");
 
     @Test
-    public void debeVerificarSiDispararRequestGetEsLlamado() throws IOException, InterruptedException {
+    public void debeVerificarCuandoHayRefugios() throws IOException, InterruptedException {
         refugio.setId(0L);
         String expectedRefugioRegistrado = "Refugios registrados:";
         String expectedIdYNombre = "0 - Test";
@@ -42,5 +42,24 @@ public class RefugioServiceTest {
 
         Assertions.assertEquals(expectedRefugioRegistrado, actualRefugiosRegistrados);
         Assertions.assertEquals(expectedIdYNombre, actualIdYNombre);
+    }
+
+    @Test
+    public void debeVerificarCuandoNoHayRefugios() throws IOException, InterruptedException {
+        String expected = "No hay refugios registrados";
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos);
+        System.setOut(printStream);
+
+        when(response.body()).thenReturn("[]");
+        when(client.dispararRequestGet(anyString())).thenReturn(response);
+
+        refugioService.listarRefugios();
+
+        String[] lines = baos.toString().split(System.lineSeparator());
+        String actual = lines[0];
+
+        Assertions.assertEquals(expected, actual);
     }
 }

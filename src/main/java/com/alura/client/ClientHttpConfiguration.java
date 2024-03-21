@@ -1,7 +1,6 @@
 package com.alura.client;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.net.URI;
