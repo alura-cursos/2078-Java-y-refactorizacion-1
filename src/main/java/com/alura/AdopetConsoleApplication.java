@@ -8,8 +8,8 @@ import java.util.Scanner;
 public class AdopetConsoleApplication {
 
     public static void main(String[] args) {
+        CommandExecutor executor = new CommandExecutor();
         ClientHttpConfiguration client = new ClientHttpConfiguration();
-        RefugioService refugioService = new RefugioService(client);
         MascotaService mascotaService = new MascotaService(client);
         System.out.println("##### BIENVENIDOS AL SISTEMA ADOPET-CONSOLE #####");
         try {
@@ -26,9 +26,9 @@ public class AdopetConsoleApplication {
                 opcionElegida = Integer.parseInt(textoEscrito);
 
                 if (opcionElegida == 1) {
-                    refugioService.listarRefugios();
+                    executor.executeCommand(new ListarRefugiosCommand());
                 } else if (opcionElegida == 2) {
-                    refugioService.registrarRefugio();
+                    executor.executeCommand(new RegistrarRefugioCommand());
                 } else if (opcionElegida == 3) {
                     mascotaService.listarMascotasDelRefugio();
                 } else if (opcionElegida == 4) {
