@@ -1,16 +1,11 @@
 package com.alura;
 
-import com.alura.client.ClientHttpConfiguration;
-import com.alura.service.MascotaService;
-import com.alura.service.RefugioService;
 import java.util.Scanner;
 
 public class AdopetConsoleApplication {
 
     public static void main(String[] args) {
         CommandExecutor executor = new CommandExecutor();
-        ClientHttpConfiguration client = new ClientHttpConfiguration();
-        MascotaService mascotaService = new MascotaService(client);
         System.out.println("##### BIENVENIDOS AL SISTEMA ADOPET-CONSOLE #####");
         try {
             int opcionElegida = 0;
@@ -30,9 +25,9 @@ public class AdopetConsoleApplication {
                 } else if (opcionElegida == 2) {
                     executor.executeCommand(new RegistrarRefugioCommand());
                 } else if (opcionElegida == 3) {
-                    mascotaService.listarMascotasDelRefugio();
+                    executor.executeCommand(new ListarMascotasCommand());
                 } else if (opcionElegida == 4) {
-                    mascotaService.importarMascotasEnElRefugio();
+                    executor.executeCommand(new ImportarMascotasCommand());
                 } else if (opcionElegida == 5) {
                     break;
                 } else {
